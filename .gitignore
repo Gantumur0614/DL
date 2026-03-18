@@ -1,0 +1,7 @@
+/data 
+*.csv 
+data 
+*.txt 
+__pycache__ 
+models
+keysforce_https
