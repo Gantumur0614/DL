@@ -15,7 +15,6 @@ import numpy as np
 from huggingface_hub import login
 import gc
 import os
-import datasets
 
 
 @dataclass
@@ -181,7 +180,7 @@ if __name__ == "__main__":
         processing_class=processor
     )
 
-    trainer.train()
+    trainer.train(resume_from_checkpoint=True)
 
     trainer.save_model(save_dir)
     trainer.push_to_hub("Training completed")

@@ -1,6 +1,4 @@
 import torch
-from dataclasses import dataclass
-from typing import Any, Dict, List, Union
 from datasets import load_from_disk, Audio, concatenate_datasets
 from transformers import (
     WhisperFeatureExtractor,
@@ -15,32 +13,14 @@ import numpy as np
 from huggingface_hub import login
 import gc
 import os
-import datasets
+from data_collator import DataCollatorSpeechSeq2SeqWithPadding
+from dotenv import load_dotenv
+
+load_dotenv()  
+token = os.getenv("HF_TOKEN")
+login(token=token)
 
 
-@dataclass
-class DataCollatorSpeechSeq2SeqWithPadding:
-    processor: any
-
-    def __call__(self, features: List[Dict[str, Union[List[int], torch.Tensor]]]) -> Dict[str, torch.Tensor]:
-        input_features = [{"input_features": feature["input_features"]}
-                          for feature in features]
-        batch = self.processor.feature_extractor.pad(
-            input_features, return_tensors="pt")
-
-        label_features = [{"input_ids": feature["labels"]}
-                          for feature in features]
-        labels_batch = self.processor.tokenizer.pad(
-            label_features, return_tensors="pt")
-
-        labels = labels_batch["input_ids"].masked_fill(
-            labels_batch.attention_mask.ne(1), -100)
-
-        if (labels[:, 0] == self.processor.tokenizer.bos_token_id).all().cpu().item():
-            labels = labels[:, 1:]
-
-        batch["labels"] = labels
-        return batch
 
 
 def prepare_transcribe(batch):
@@ -127,8 +107,7 @@ if __name__ == "__main__":
     if os.path.exists(f"{cache_dir}/train_translation"):
         train_translation = load_from_disk(f"{cache_dir}/train_translation")
     else:
-        train_translation = common_voice_train.map(
-            prepare_translation, remove_columns=common_voice_train.column_names, num_proc=1)
+        train_translation = common_voice_train.map(prepare_translation, remove_columns=common_voice_train.column_names)
         train_translation.save_to_disk(f"{cache_dir}/train_translation")
 
     del common_voice_train
@@ -151,7 +130,7 @@ if __name__ == "__main__":
         gradient_accumulation_steps=4,
         learning_rate=3.5e-6,
         warmup_steps=500,
-        num_train_epochs=60,
+        num_train_epochs=50,
         weight_decay=0.01,
         gradient_checkpointing=True,
         fp16=True,
@@ -181,7 +160,7 @@ if __name__ == "__main__":
         processing_class=processor
     )
 
-    trainer.train()
+    trainer.train(resume_from_checkpoint=True)
 
     trainer.save_model(save_dir)
     trainer.push_to_hub("Training completed")
