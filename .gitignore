@@ -7,6 +7,5 @@ models
 keysforce_https
 /models 
 /keyforce_https
-*.ipynb
 *.json
 .env
