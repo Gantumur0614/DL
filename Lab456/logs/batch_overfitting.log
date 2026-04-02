@@ -1,0 +1,21 @@
+2026-02-24 20:16:19 | --------------------------------
+2026-02-24 20:16:19 | Starting Batch overfitting Session
+2026-02-24 20:16:19 | --------------------------------
+2026-02-24 20:16:25 | Tested: LR=0.001, Opt=Adam, Loss=MSE | Final Loss: 0.210528
+2026-02-24 20:16:30 | Tested: LR=0.001, Opt=Adam, Loss=SmoothL1 | Final Loss: 0.105864
+2026-02-24 20:16:34 | Tested: LR=0.001, Opt=SGD_Momentum, Loss=MSE | Final Loss: 0.214359
+2026-02-24 20:16:39 | Tested: LR=0.001, Opt=SGD_Momentum, Loss=SmoothL1 | Final Loss: 0.086750
+2026-02-24 20:16:44 | Tested: LR=0.0005, Opt=Adam, Loss=MSE | Final Loss: 0.011148
+2026-02-24 20:16:49 | Tested: LR=0.0005, Opt=Adam, Loss=SmoothL1 | Final Loss: 0.115364
+2026-02-24 20:16:54 | Tested: LR=0.0005, Opt=SGD_Momentum, Loss=MSE | Final Loss: 0.171373
+2026-02-24 20:16:58 | Tested: LR=0.0005, Opt=SGD_Momentum, Loss=SmoothL1 | Final Loss: 0.006359
+2026-02-24 20:17:03 | Tested: LR=0.0001, Opt=Adam, Loss=MSE | Final Loss: 0.018565
+2026-02-24 20:17:08 | Tested: LR=0.0001, Opt=Adam, Loss=SmoothL1 | Final Loss: 0.009027
+2026-02-24 20:17:13 | Tested: LR=0.0001, Opt=SGD_Momentum, Loss=MSE | Final Loss: 0.022308
+2026-02-24 20:17:18 | Tested: LR=0.0001, Opt=SGD_Momentum, Loss=SmoothL1 | Final Loss: 0.010034
+2026-02-24 20:17:22 | Tested: LR=1e-05, Opt=Adam, Loss=MSE | Final Loss: 0.051816
+2026-02-24 20:17:27 | Tested: LR=1e-05, Opt=Adam, Loss=SmoothL1 | Final Loss: 0.026466
+2026-02-24 20:17:32 | Tested: LR=1e-05, Opt=SGD_Momentum, Loss=MSE | Final Loss: 0.053432
+2026-02-24 20:17:37 | Tested: LR=1e-05, Opt=SGD_Momentum, Loss=SmoothL1 | Final Loss: 0.026874
+2026-02-24 20:17:37 | Best Combination Found: {'LR': 0.0005, 'Optimizer': 'SGD_Momentum', 'Loss': 'SmoothL1'}
+2026-02-24 20:17:37 | Lowest Loss Achieved: 0.006359
