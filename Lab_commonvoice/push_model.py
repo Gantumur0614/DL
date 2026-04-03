@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 login(token=os.getenv("HF_TOKEN"))
 
-save_dir = "/home/gantumur/Documents/DL/Lab_commonvoice/models/whisper_small_mongolian"
+save_dir = "models/whisper_small_mongolian"
 repo_id = "Ganaa0614/whisper-small-mongolian-ver_0.1"
 
 print("Loading locally saved final model...")

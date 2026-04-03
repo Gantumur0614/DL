@@ -4,7 +4,6 @@ from transformers import Wav2Vec2Processor
 import datasets 
 import torch
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
 from datasets import load_dataset, Audio, load_from_disk
 import evaluate 
 import numpy as np 
@@ -14,53 +13,9 @@ from huggingface_hub import login
 from transformers import Trainer 
 import gc
 import torch
+from data_collator_xlrs import DataCollatorCTCWithPadding
 
 
-@dataclass
-class DataCollatorCTCWithPadding:
-    """
-    Data collator that will dynamically pad the inputs received.
-    Args:
-        processor (:class:`~transformers.Wav2Vec2Processor`)
-            The processor used for proccessing the data.
-        padding (:obj:`bool`, :obj:`str` or :class:`~transformers.tokenization_utils_base.PaddingStrategy`, `optional`, defaults to :obj:`True`):
-            Select a strategy to pad the returned sequences (according to the model's padding side and padding index)
-            among:
-            * :obj:`True` or :obj:`'longest'`: Pad to the longest sequence in the batch (or no padding if only a single
-              sequence if provided).
-            * :obj:`'max_length'`: Pad to a maximum length specified with the argument :obj:`max_length` or to the
-              maximum acceptable input length for the model if that argument is not provided.
-            * :obj:`False` or :obj:`'do_not_pad'` (default): No padding (i.e., can output a batch with sequences of
-              different lengths).
-    """
-
-    processor: Wav2Vec2Processor
-    padding: Union[bool, str] = True
-
-    def __call__(self, features: List[Dict[str, Union[List[int], torch.Tensor]]]) -> Dict[str, torch.Tensor]:
-        input_features = [{"input_values": feature["input_values"]}
-                          for feature in features]
-        label_features = [{"input_ids": feature["labels"]}
-                          for feature in features]
-
-        batch = self.processor.pad(
-            input_features,
-            padding=self.padding,
-            return_tensors="pt",
-        )
-        # with self.processor.as_target_processor():
-        labels_batch = self.processor.tokenizer.pad(
-            label_features,
-            padding=self.padding,
-            return_tensors="pt",
-        )
-
-        labels = labels_batch["input_ids"].masked_fill(
-            labels_batch.attention_mask.ne(1), -100)
-
-        batch["labels"] = labels
-
-        return batch
     
 
 def prepare_dataset(batch):
@@ -88,13 +43,15 @@ def compute_metrics(pred):
     return {"wer": wer}
 
 
-save_directory = "/home/gantumur/Documents/DL/Lab_commonvoice/models/mongolian-wav2vec2-trained_ver_0"
+save_directory = "Lab_commonvoice/models/mongolian-wav2vec2-trained_ver_0"
 
 
 if __name__ == "__main__":
+    save_dir = "Lab_commonvoice/models/wav2vec2-large-xlsr-53-mongolian_ver_0.1"
+    cache_dir = "Lab_commonvoice/data/cache"
 
     tokenizer = Wav2Vec2CTCTokenizer.from_pretrained(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/", unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
+        "", unk_token="[UNK]", pad_token="[PAD]", word_delimiter_token="|")
 
     feature_extractor = Wav2Vec2FeatureExtractor(
         feature_size=1, sampling_rate=16000, padding_value=0.0, do_normalize=True, return_attention_mask=True)
@@ -103,21 +60,9 @@ if __name__ == "__main__":
     processor = Wav2Vec2Processor(
         feature_extractor=feature_extractor, tokenizer=tokenizer)
 
-    common_voice_train = load_from_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_train")
-    common_voice_test = load_from_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_test")
+    common_voice_train = load_from_disk(f"{cache_dir}/train_transcribe")
+    common_voice_test = load_from_disk(f"{cache_dir}/test_transcribe")
 
-
-    common_voice_train = common_voice_train.cast_column(
-        "audio", datasets.features.audio.Audio(sampling_rate=16_000))
-    common_voice_test = common_voice_test.cast_column(
-        "audio", datasets.features.audio.Audio(sampling_rate=16_000))
-
-    common_voice_train = common_voice_train.map(
-        prepare_dataset, remove_columns=common_voice_train.column_names)
-    common_voice_test = common_voice_test.map(
-        prepare_dataset, remove_columns=common_voice_test.column_names)
     
     max_input_length_in_sec = 10.0
     common_voice_train = common_voice_train.filter(
@@ -142,7 +87,7 @@ if __name__ == "__main__":
     )
 
     training_args = TrainingArguments(
-        output_dir='repo_name',
+        output_dir=save_dir,
         group_by_length=True,
         per_device_train_batch_size=8,
         gradient_accumulation_steps=2,

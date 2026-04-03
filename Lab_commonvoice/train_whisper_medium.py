@@ -59,8 +59,8 @@ def compute_metrics(pred):
 
 
 if __name__ == "__main__":
-    save_dir = "models/whisper_medium_mongolian"
-    cache_dir = "data/cache"
+    save_dir = "Lab_commonvoice/models/whisper_medium_mongolian"
+    cache_dir = "Lab_commonvoice/data/cache"
 
 
     processor = WhisperProcessor.from_pretrained(
@@ -76,9 +76,9 @@ if __name__ == "__main__":
     model.config.attention_dropout = 0.1
 
     common_voice_train = load_from_disk(
-        "data/common_voice_train")
+        "Lab_commonvoice/data/common_voice_train")
     common_voice_test = load_from_disk(
-        "data/common_voice_test")
+        "Lab_commonvoice/data/common_voice_test")
 
     common_voice_train = common_voice_train.cast_column(
         "audio", Audio(sampling_rate=16_000))

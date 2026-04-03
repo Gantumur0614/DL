@@ -4,7 +4,7 @@ import torch
 from datasets import load_dataset, Audio, concatenate_datasets
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, WhisperProcessor
 
-base_dir = "/home/gantumur/Documents/DL/Lab_commonvoice/data/cv-corpus-24.0-2025-12-05-mn/cv-corpus-24.0-2025-12-05/mn"
+base_dir = "Lab_comonvoice/data/cv-corpus-24.0-2025-12-05-mn/cv-corpus-24.0-2025-12-05/mn"
 
 
 def attach_audio_paths(batch):
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     common_voice_test = common_voice_test.filter(lambda sample: len(processor.tokenizer(sample["sentence"]).input_ids) <= 448)
 
     common_voice_train.save_to_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_train")
+        "Lab_commonvoice/data/common_voice_train")
     common_voice_test.save_to_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_test")
+        "Lab_commonvoice/data/common_voice_test")
     print("Multi-task dataset successfully saved!")

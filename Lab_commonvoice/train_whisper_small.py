@@ -22,7 +22,6 @@ login(token=token)
 
 
 
-
 def prepare_transcribe(batch):
     audio = batch["audio"]
     batch["input_features"] = processor.feature_extractor(
