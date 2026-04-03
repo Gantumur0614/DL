@@ -63,8 +63,8 @@ def compute_metrics(pred):
 
 
 if __name__ == "__main__":
-    save_dir = "/home/gantumur/Documents/DL/Lab_commonvoice/models/whisper_small_mongolian"
-    cache_dir = "/home/gantumur/Documents/DL/Lab_commonvoice/data/cache"
+    save_dir = "Lab_commonvoice/models/whisper_small_mongolian"
+    cache_dir = "Lab_commonvoice/data/cache"
 
 
     processor = WhisperProcessor.from_pretrained(
@@ -79,40 +79,10 @@ if __name__ == "__main__":
     model.config.dropout = 0.1
     model.config.attention_dropout = 0.1
 
-    common_voice_train = load_from_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_train")
-    common_voice_test = load_from_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_test")
+    train_transcribe = load_from_disk(f"{cache_dir}/train_transcribe")
+    test_transcribe = load_from_disk(f"{cache_dir}/test_transcribe")
 
-    common_voice_train = common_voice_train.cast_column(
-        "audio", Audio(sampling_rate=16_000))
-    common_voice_test = common_voice_test.cast_column(
-        "audio", Audio(sampling_rate=16_000))
-
-    os.makedirs(cache_dir, exist_ok=True)
-
-    print("Mapping transcription on data")
-    if os.path.exists(f"{cache_dir}/train_transcribe"):
-        train_transcribe = load_from_disk(f"{cache_dir}/train_transcribe")
-        test_transcribe = load_from_disk(f"{cache_dir}/test_transcribe")
-    else:
-        train_transcribe = common_voice_train.map(
-            prepare_transcribe, remove_columns=common_voice_train.column_names, num_proc=1)
-        test_transcribe = common_voice_test.map(
-            prepare_transcribe, remove_columns=common_voice_test.column_names, num_proc=1)
-        train_transcribe.save_to_disk(f"{cache_dir}/train_transcribe")
-        test_transcribe.save_to_disk(f"{cache_dir}/test_transcribe")
-
-    print("Mapping translation on data")
-    if os.path.exists(f"{cache_dir}/train_translation"):
-        train_translation = load_from_disk(f"{cache_dir}/train_translation")
-    else:
-        train_translation = common_voice_train.map(prepare_translation, remove_columns=common_voice_train.column_names)
-        train_translation.save_to_disk(f"{cache_dir}/train_translation")
-
-    del common_voice_train
-    del common_voice_test
-    gc.collect()
+    train_translation = load_from_disk(f"{cache_dir}/train_translation")
 
     mixed_train = concatenate_datasets(
         [train_transcribe, train_translation]).shuffle(seed=42)

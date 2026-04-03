@@ -15,31 +15,8 @@ import numpy as np
 from huggingface_hub import login
 import gc
 import os
+from data_collator import DataCollatorSpeechSeq2SeqWithPadding
 
-
-@dataclass
-class DataCollatorSpeechSeq2SeqWithPadding:
-    processor: any
-
-    def __call__(self, features: List[Dict[str, Union[List[int], torch.Tensor]]]) -> Dict[str, torch.Tensor]:
-        input_features = [{"input_features": feature["input_features"]}
-                          for feature in features]
-        batch = self.processor.feature_extractor.pad(
-            input_features, return_tensors="pt")
-
-        label_features = [{"input_ids": feature["labels"]}
-                          for feature in features]
-        labels_batch = self.processor.tokenizer.pad(
-            label_features, return_tensors="pt")
-
-        labels = labels_batch["input_ids"].masked_fill(
-            labels_batch.attention_mask.ne(1), -100)
-
-        if (labels[:, 0] == self.processor.tokenizer.bos_token_id).all().cpu().item():
-            labels = labels[:, 1:]
-
-        batch["labels"] = labels
-        return batch
 
 
 def prepare_transcribe(batch):
@@ -82,8 +59,8 @@ def compute_metrics(pred):
 
 
 if __name__ == "__main__":
-    save_dir = "/home/gantumur/Documents/DL/Lab_commonvoice/models/whisper_medium_mongolian"
-    cache_dir = "/home/gantumur/Documents/DL/Lab_commonvoice/data/cache"
+    save_dir = "models/whisper_medium_mongolian"
+    cache_dir = "data/cache"
 
 
     processor = WhisperProcessor.from_pretrained(
@@ -99,9 +76,9 @@ if __name__ == "__main__":
     model.config.attention_dropout = 0.1
 
     common_voice_train = load_from_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_train")
+        "data/common_voice_train")
     common_voice_test = load_from_disk(
-        "/home/gantumur/Documents/DL/Lab_commonvoice/data/common_voice_test")
+        "data/common_voice_test")
 
     common_voice_train = common_voice_train.cast_column(
         "audio", Audio(sampling_rate=16_000))
