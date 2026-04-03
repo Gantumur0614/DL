@@ -8,7 +8,8 @@ from transformers import (
     WhisperProcessor,
     WhisperForConditionalGeneration,
     Seq2SeqTrainingArguments,
-    Seq2SeqTrainer
+    Seq2SeqTrainer,
+    BitsAndBytesConfig
 )
 import evaluate
 import numpy as np
@@ -16,7 +17,45 @@ from huggingface_hub import login
 import gc
 import os
 from data_collator import DataCollatorSpeechSeq2SeqWithPadding
+from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training
+import argparse 
+from transformers.trainer_utils import get_last_checkpoint
 
+def args_parse():
+    parser = argparse.ArgumentParser(description="training parameters")
+
+    parser.add_argument(
+        "--model_size",
+        help="tiny, small, medium, large .exc",
+        choices=["tiny", "small", "medium"],
+        default="small",
+
+    )
+    
+    parser.add_argument(
+        "--peft",
+        help="LoRA or FFT",
+        choices=["fft", "qlora"],
+        default="fft"
+    )
+
+    parser.add_argument(
+        "--batch_size",
+        help="batch_size: 8, 16, etc (default 8)",
+        default=8,
+        type=int,
+        required=True
+    )
+
+    parser.add_argument(
+        "--epochs",
+        help="epochs 10, 20, 30, .etc (default 30)",
+        default=30,
+        type=int,
+        required=True
+    )
+    
+    return parser.parse_args()
 
 
 def prepare_transcribe(batch):
@@ -59,15 +98,27 @@ def compute_metrics(pred):
 
 
 if __name__ == "__main__":
-    save_dir = "Lab_commonvoice/models/whisper_medium_mongolian"
+    args = args_parse()
+
+    save_dir = f"Lab_commonvoice/models/whisper_{args.model_size}_mongolian"
     cache_dir = "Lab_commonvoice/data/cache"
 
 
-    processor = WhisperProcessor.from_pretrained(
-        "openai/whisper-medium", language="Mongolian", task="transcribe")
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_use_double_quant=True,
+    )
 
+    processor = WhisperProcessor.from_pretrained(
+        f"openai/whisper-{args.model_size}", language="Mongolian", task="transcribe")
     model = WhisperForConditionalGeneration.from_pretrained(
-        "openai/whisper-medium")
+        f"openai/whisper-{args.model_size}",
+        quantization_config=bnb_config if args.peft.lower() == "qlora" else None,
+        device_map="auto"        
+    )
+    
     model.generation_config.forced_decoder_ids = processor.get_decoder_prompt_ids(
         language="Mongolian", task="transcribe")
     model.generation_config.suppress_tokens = []
@@ -120,14 +171,29 @@ if __name__ == "__main__":
     wer_metric = evaluate.load("wer")
     cer_metric = evaluate.load("cer")
 
+    if args.peft.lower() == "qlora":
+        model = prepare_model_for_kbit_training(model)
+
+        model.enable_input_require_grads()
+
+        config = LoraConfig(
+            r=32, 
+            lora_alpha=64,
+            target_modules=["q_proj", "v_proj"],
+            lora_dropout=0.05,
+            bias="none"
+        )
+
+        model = get_peft_model(model, config)
+
     training_args = Seq2SeqTrainingArguments(
         output_dir=save_dir,
-        per_device_train_batch_size=1,
+        per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=1,
-        gradient_accumulation_steps=4,
+        gradient_accumulation_steps=8,
         learning_rate=3.5e-6,
         warmup_steps=500,
-        num_train_epochs=60,
+        num_train_epochs=args.epochs,
         weight_decay=0.01,
         gradient_checkpointing=True,
         fp16=True,
@@ -143,9 +209,16 @@ if __name__ == "__main__":
         greater_is_better=False,
         save_total_limit=2,
         push_to_hub=True,
-        hub_model_id="Ganaa0614/whisper-medium-mongolian-ver_0.1",
+        hub_model_id=f"Ganaa0614/whisper-{args.model_size}-mongolian-ver_0.1",
         report_to=["tensorboard"]
     )
+
+
+    last_checkpoint = None 
+
+    if os.path.exists(save_dir) and os.listdir(save_dir):
+        last_checkpoint = get_last_checkpoint(save_dir)
+
 
     trainer = Seq2SeqTrainer(
         args=training_args,
@@ -157,7 +230,7 @@ if __name__ == "__main__":
         processing_class=processor
     )
 
-    trainer.train(resume_from_checkpoint=True)
+    trainer.train(resume_from_checkpoint=last_checkpoint)
 
     trainer.save_model(save_dir)
     trainer.push_to_hub("Training completed")
