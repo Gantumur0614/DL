@@ -11,3 +11,4 @@ keysforce_https
 .env
 *.ipynb
 push_model.py
+BieDaalt/

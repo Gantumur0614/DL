@@ -1,0 +1,6 @@
+[submodule "BieDaalt/Mongolian_LLM"]
+	path = BieDaalt/Mongolian_LLM
+	url = https://github.com/Amraaka/Mongolian_LLM.git
+[submodule "Mongolian_LLM"]
+	path = Mongolian_LLM
+	url = https://github.com/Amraaka/Mongolian_LLM.git
