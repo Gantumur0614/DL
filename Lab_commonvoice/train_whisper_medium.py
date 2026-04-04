@@ -1,7 +1,7 @@
 import torch
 from dataclasses import dataclass
 from typing import Any, Dict, List, Union
-from datasets import load_from_disk, Audio, concatenate_datasets
+from datasets import load_from_disk, Audio, concatenate_datasets, load_dataset
 from transformers import (
     WhisperFeatureExtractor,
     WhisperTokenizer,
@@ -20,6 +20,11 @@ from data_collator import DataCollatorSpeechSeq2SeqWithPadding
 from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training
 import argparse 
 from transformers.trainer_utils import get_last_checkpoint
+from dotenv import load_dotenv
+
+load_dotenv()
+token = os.getenv("HF_TOKEN")
+login(token=token)
 
 def args_parse():
     parser = argparse.ArgumentParser(description="training parameters")
@@ -40,6 +45,14 @@ def args_parse():
     )
 
     parser.add_argument(
+        "--lr",
+        help="Learning rate (default set 3.5e-6 for ftt)",
+        default=3.5e-6,
+        type=float,
+        required=True
+    )
+
+    parser.add_argument(
         "--batch_size",
         help="batch_size: 8, 16, etc (default 8)",
         default=8,
@@ -54,6 +67,21 @@ def args_parse():
         type=int,
         required=True
     )
+
+    parser.add_argument(
+        "--eval_batch",
+        help="eval batch size (4, 8, .etc)",
+        default=4,
+        type=int
+    )
+
+    parser.add_argument(
+        "--save_version",
+        help="model saved verison name (0.1, 0.2, .etc)",
+        required=True
+    )
+
+    
     
     return parser.parse_args()
 
@@ -100,9 +128,10 @@ def compute_metrics(pred):
 if __name__ == "__main__":
     args = args_parse()
 
-    save_dir = f"Lab_commonvoice/models/whisper_{args.model_size}_mongolian"
-    cache_dir = "Lab_commonvoice/data/cache"
+    save_dir = f"models/whisper_{args.model_size}_mongolian"
+    cache_dir = "data/cache"
 
+    os.makedirs(save_dir, exist_ok=True)
 
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -125,42 +154,35 @@ if __name__ == "__main__":
 # added dropout
     model.config.dropout = 0.1
     model.config.attention_dropout = 0.1
-
-    common_voice_train = load_from_disk(
-        "Lab_commonvoice/data/common_voice_train")
-    common_voice_test = load_from_disk(
-        "Lab_commonvoice/data/common_voice_test")
-
-    common_voice_train = common_voice_train.cast_column(
-        "audio", Audio(sampling_rate=16_000))
-    common_voice_test = common_voice_test.cast_column(
-        "audio", Audio(sampling_rate=16_000))
-
+    
     os.makedirs(cache_dir, exist_ok=True)
 
-    print("Mapping transcription on data")
-    if os.path.exists(f"{cache_dir}/train_transcribe"):
+    if os.path.exists(f"{cache_dir}/train_transcribe") and os.path.exists(f"{cache_dir}/train_translation"):
         train_transcribe = load_from_disk(f"{cache_dir}/train_transcribe")
         test_transcribe = load_from_disk(f"{cache_dir}/test_transcribe")
+        train_translation = load_from_disk(f"{cache_dir}/train_translation")
+
     else:
-        train_transcribe = common_voice_train.map(
-            prepare_transcribe, remove_columns=common_voice_train.column_names, num_proc=1)
-        test_transcribe = common_voice_test.map(
-            prepare_transcribe, remove_columns=common_voice_test.column_names, num_proc=1)
+        fulldataset = load_dataset("Ganaa0614/mongolian-stt-translated")
+
+        common_voice_train = fulldataset["train"]
+        common_voice_test = fulldataset["validation"]
+
+        common_voice_train = common_voice_train.cast_column("audio", Audio(sampling_rate=16_000))
+        common_voice_test = common_voice_test.cast_column("audio", Audio(sampling_rate=16_000))
+
+        train_transcribe = common_voice_train.map(prepare_transcribe, remove_columns=common_voice_train.column_names, num_proc=1)
+        test_transcribe = common_voice_test.map(prepare_transcribe, remove_columns=common_voice_test.column_names, num_proc=1)
+        train_translation = common_voice_train.map(prepare_translation, remove_columns=common_voice_train.column_names, num_proc=1)
+
         train_transcribe.save_to_disk(f"{cache_dir}/train_transcribe")
         test_transcribe.save_to_disk(f"{cache_dir}/test_transcribe")
-
-    print("Mapping translation on data")
-    if os.path.exists(f"{cache_dir}/train_translation"):
-        train_translation = load_from_disk(f"{cache_dir}/train_translation")
-    else:
-        train_translation = common_voice_train.map(
-            prepare_translation, remove_columns=common_voice_train.column_names, num_proc=1)
         train_translation.save_to_disk(f"{cache_dir}/train_translation")
 
-    del common_voice_train
-    del common_voice_test
-    gc.collect()
+        del common_voice_train
+        del common_voice_test
+        gc.collect()
+
 
     mixed_train = concatenate_datasets(
         [train_transcribe, train_translation]).shuffle(seed=42)
@@ -189,9 +211,9 @@ if __name__ == "__main__":
     training_args = Seq2SeqTrainingArguments(
         output_dir=save_dir,
         per_device_train_batch_size=args.batch_size,
-        per_device_eval_batch_size=1,
+        per_device_eval_batch_size=args.eval_batch,
         gradient_accumulation_steps=8,
-        learning_rate=3.5e-6,
+        learning_rate=args.lr,
         warmup_steps=500,
         num_train_epochs=args.epochs,
         weight_decay=0.01,
@@ -209,10 +231,9 @@ if __name__ == "__main__":
         greater_is_better=False,
         save_total_limit=2,
         push_to_hub=True,
-        hub_model_id=f"Ganaa0614/whisper-{args.model_size}-mongolian-ver_0.1",
+        hub_model_id=f"Ganaa0614/whisper-{args.model_size}-mongolian-ver_{args.save_version}",
         report_to=["tensorboard"]
     )
-
 
     last_checkpoint = None 
 
