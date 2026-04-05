@@ -16,7 +16,6 @@ import torch
 from data_collator_xlrs import DataCollatorCTCWithPadding
 
 
-    
 
 def prepare_dataset(batch):
     audio = batch["audio"]

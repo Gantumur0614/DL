@@ -7,8 +7,7 @@ from flag_data_class import CommonVoiceFlagger
 
 parser = argparse.ArgumentParser(description="Launch Mongolian STT App")
 parser.add_argument(
-    "model_type",
-    nargs="?",
+    "--model_type",
     default="xlsr",
     choices=["whisper", "xlsr"],
     help="Choose model: 'whisper' or 'xlsr' (default: xlsr)"
@@ -16,13 +15,13 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-if args.model_type == "whisper":
+if args.model_type.lower() == "whisper":
     # processor = AutoProcessor.from_pretrained(
     #     "Ganaa0614/whisper-small-mongolian-ver_0.1")
     # model = AutoModelForSpeechSeq2Seq.from_pretrained(
     #     "Ganaa0614/whisper-small-mongolian-ver_0.1")
  
-    local_path = "Lab_commonvoice/models/whisper_small_mongolian"
+    local_path = "models/whisper_small_mongolian"
 
     processor = AutoProcessor.from_pretrained(
         local_path,
@@ -35,9 +34,9 @@ if args.model_type == "whisper":
     
 elif args.model_type == "xlsr":
     processor = Wav2Vec2Processor.from_pretrained(
-        "Ganaa0614/whisper-tiny-mongolian-ver_0.1")  
+        "Ganaa0614/wav2vec2-large-xlsr-53-mongolian_ver_0.1")
     model = Wav2Vec2ForCTC.from_pretrained(
-        "Ganaa0614/whisper-tiny-mongolian-ver_0.1")
+        "Ganaa0614/wav2vec2-large-xlsr-53-mongolian_ver_0.1")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
@@ -95,14 +94,14 @@ iface = gr.Interface(
     description=f"Currently running the **{args.model_type.upper()}** model. Click 'RECORD' to speak.",
 
     flagging_callback=CommonVoiceFlagger(),
-    flagging_dir="Lab_commonvoice/data/my_voice_dataset"
+    flagging_dir="data/my_voice_dataset"
 )
 
 if __name__ == "__main__":
     iface.launch(
         server_name="100.105.3.3",
-        ssl_certfile="Lab_commonvoice/keysforce_https/gantumur-desktop.tail981298.ts.net.crt",
-        ssl_keyfile="Lab_commonvoice/keysforce_https/gantumur-desktop.tail981298.ts.net.key",
+        ssl_certfile="keysforce_https/gantumur-desktop.tail981298.ts.net.crt",
+        ssl_keyfile="keysforce_https/gantumur-desktop.tail981298.ts.net.key",
         ssl_verify=False,
         share=False
     )
