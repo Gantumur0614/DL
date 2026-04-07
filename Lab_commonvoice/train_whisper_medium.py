@@ -17,11 +17,21 @@ from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training, Pe
 import argparse 
 from transformers.trainer_utils import get_last_checkpoint
 from dotenv import load_dotenv
+from CustomCallback import CustomLogCallback
+import logging
 
+def setup_logging(current_dir, train_session_name):
+    log_dir = os.path.join(current_dir, "logs")
+    os.makedirs(log_dir, exist_ok=True)
 
-load_dotenv()
-token = os.getenv("HF_TOKEN")
-login(token=token)
+    log_file = os.path.join(log_dir, f"{train_session_name}.log")
+    logging.basicConfig(
+        filename=str(log_file),
+        filemode="a",
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        level=logging.INFO
+    )
+    return log_file    
 
 def args_parse():
     parser = argparse.ArgumentParser(description="training parameters")
@@ -279,13 +289,24 @@ if __name__ == "__main__":
         eval_dataset=test_transcribe,
         compute_metrics=compute_metrics,
         data_collator=data_collator,
-        processing_class=processor
+        processing_class=processor,
+        callbacks=[CustomLogCallback]
     )
 
     trainer.train(resume_from_checkpoint=last_checkpoint)
-
     trainer.save_model(save_dir)
-    trainer.push_to_hub("Training completed")
+
+
+    load_dotenv()
+    token = os.getenv("HF_TOKEN")
+    login(token=token)
+
+    try:
+        trainer.push_to_hub("Training completed")
+        print("Successfully pushed to Hub!")
+    except Exception as e:
+     
+        print(f"Error details: {e}")
 
     print(f"Model and proccesssor saved to {save_dir}")
 
@@ -295,3 +316,8 @@ if __name__ == "__main__":
 
     gc.collect()
     torch.cuda.empty_cache()
+
+
+    trainer.train(resume_from_checkpoint=last_checkpoint)
+    trainer.save_model(save_dir)
+
