@@ -1,0 +1,138 @@
+2026-04-15 00:00:51,740 - INFO - HTTP Request: GET https://huggingface.co/api/models/openai/whisper-small/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:52,024 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:52,334 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/chat_template.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:52,614 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:52,890 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/audio_tokenizer_config.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:53,169 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:53,457 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:00:53,518 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/openai/whisper-small/973afd24965f72e36ca33b3055d56a652f456b4d/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:53,820 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:54,088 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:00:54,149 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/openai/whisper-small/973afd24965f72e36ca33b3055d56a652f456b4d/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:54,431 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:00:54,491 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/openai/whisper-small/973afd24965f72e36ca33b3055d56a652f456b4d/config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:54,774 - INFO - HTTP Request: HEAD https://huggingface.co/openai/whisper-small/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:00:54,835 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/openai/whisper-small/973afd24965f72e36ca33b3055d56a652f456b4d/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:55,135 - INFO - HTTP Request: GET https://huggingface.co/api/models/openai/whisper-small/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:55,405 - INFO - HTTP Request: GET https://huggingface.co/api/models/openai/whisper-small/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-04-15 00:00:55,776 - INFO - HTTP Request: HEAD https://huggingface.co/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:00:56,100 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/6da24fa696fc01d4c5ffc5e4d3f4100e4b095680/config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:56,437 - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/6da24fa696fc01d4c5ffc5e4d3f4100e4b095680/config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:56,715 - INFO - HTTP Request: HEAD https://huggingface.co/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:00:57,025 - INFO - HTTP Request: HEAD https://huggingface.co/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:00:57,123 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/6da24fa696fc01d4c5ffc5e4d3f4100e4b095680/config.json "HTTP/1.1 200 OK"
+2026-04-15 00:00:57,405 - INFO - HTTP Request: HEAD https://huggingface.co/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+2026-04-15 00:00:57,693 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/xet-read-token/6da24fa696fc01d4c5ffc5e4d3f4100e4b095680 "HTTP/1.1 200 OK"
+2026-04-15 00:02:28,778 - INFO - HTTP Request: HEAD https://huggingface.co/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-04-15 00:02:29,186 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/6da24fa696fc01d4c5ffc5e4d3f4100e4b095680/generation_config.json "HTTP/1.1 200 OK"
+2026-04-15 00:02:29,580 - INFO - HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2/6da24fa696fc01d4c5ffc5e4d3f4100e4b095680/generation_config.json "HTTP/1.1 200 OK"
+2026-04-15 00:02:29,941 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/main/README.md "HTTP/1.1 200 OK"
+2026-04-15 00:02:30,295 - INFO - HTTP Request: GET https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/main/README.md "HTTP/1.1 200 OK"
+2026-04-15 00:02:30,648 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/44cf7be4e6772bea85f9fc0c839b2311a58085dd/mongolian-custom-stt-translated-full.py "HTTP/1.1 404 Not Found"
+2026-04-15 00:02:31,366 - INFO - HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/Ganaa0614/mongolian-custom-stt-translated-full/Ganaa0614/mongolian-custom-stt-translated-full.py "HTTP/1.1 404 Not Found"
+2026-04-15 00:02:31,835 - INFO - HTTP Request: GET https://huggingface.co/api/datasets/Ganaa0614/mongolian-custom-stt-translated-full/revision/44cf7be4e6772bea85f9fc0c839b2311a58085dd "HTTP/1.1 200 OK"
+2026-04-15 00:02:32,189 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/44cf7be4e6772bea85f9fc0c839b2311a58085dd/.huggingface.yaml "HTTP/1.1 404 Not Found"
+2026-04-15 00:02:33,006 - INFO - HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=Ganaa0614/mongolian-custom-stt-translated-full "HTTP/1.1 501 Not Implemented"
+2026-04-15 00:02:33,386 - INFO - HTTP Request: GET https://huggingface.co/api/datasets/Ganaa0614/mongolian-custom-stt-translated-full/tree/44cf7be4e6772bea85f9fc0c839b2311a58085dd/data?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-04-15 00:02:33,735 - INFO - HTTP Request: GET https://huggingface.co/api/datasets/Ganaa0614/mongolian-custom-stt-translated-full/tree/44cf7be4e6772bea85f9fc0c839b2311a58085dd?recursive=false&expand=false "HTTP/1.1 200 OK"
+2026-04-15 00:02:34,088 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/44cf7be4e6772bea85f9fc0c839b2311a58085dd/dataset_infos.json "HTTP/1.1 404 Not Found"
+2026-04-15 00:02:34,466 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/44cf7be4e6772bea85f9fc0c839b2311a58085dd/data/test-00000-of-00001.parquet "HTTP/1.1 302 Found"
+2026-04-15 00:02:34,866 - INFO - HTTP Request: GET https://huggingface.co/api/datasets/Ganaa0614/mongolian-custom-stt-translated-full/xet-read-token/44cf7be4e6772bea85f9fc0c839b2311a58085dd "HTTP/1.1 200 OK"
+2026-04-15 00:02:44,079 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/44cf7be4e6772bea85f9fc0c839b2311a58085dd/data/validation-00000-of-00001.parquet "HTTP/1.1 302 Found"
+2026-04-15 00:02:57,507 - INFO - HTTP Request: HEAD https://huggingface.co/datasets/Ganaa0614/mongolian-custom-stt-translated-full/resolve/44cf7be4e6772bea85f9fc0c839b2311a58085dd/data/train-00000-of-00001.parquet "HTTP/1.1 302 Found"
+2026-04-15 00:03:32,146 - INFO - Dataset loaded from Hub
+2026-04-15 00:03:36,538 - INFO - HTTP Request: POST https://huggingface.co/api/repos/create "HTTP/1.1 200 OK"
+2026-04-15 00:03:36,539 - INFO - Trainnig started with
+model_size: small, peft: fft, lr: 1e-06, batch_size: 8, steps: 4000, eval_batch: 8, save_version: 0.1, train_data: custom, load_version: 0.2
+
+2026-04-15 00:09:34,004 - INFO - Step 200: loss=26.6729150390625, grad_norm=32.30594253540039, learning_rate=3.98e-07, epoch=40.0
+2026-04-15 00:09:35,476 - INFO - Step 200: eval_loss=0.16768646240234375, eval_wer=0.2982456140350877, eval_cer=0.09219858156028368, eval_runtime=1.4659, eval_samples_per_second=6.822, eval_steps_per_second=1.364, epoch=40.0
+2026-04-15 00:09:40,016 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:09:40,390 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:09:40,718 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/xet-write-token/main "HTTP/1.1 200 OK"
+2026-04-15 00:11:14,977 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:15:40,762 - INFO - Step 400: loss=17.10597412109375, grad_norm=35.27713394165039, learning_rate=7.98e-07, epoch=80.0
+2026-04-15 00:15:42,114 - INFO - Step 400: eval_loss=0.2469155490398407, eval_wer=0.38596491228070173, eval_cer=0.10212765957446808, eval_runtime=1.3456, eval_samples_per_second=7.432, eval_steps_per_second=1.486, epoch=80.0
+2026-04-15 00:15:47,044 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:15:47,390 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:17:18,612 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:21:48,505 - INFO - Step 600: loss=12.466190185546875, grad_norm=22.754430770874023, learning_rate=9.717142857142857e-07, epoch=120.0
+2026-04-15 00:21:49,856 - INFO - Step 600: eval_loss=0.36656302213668823, eval_wer=0.47368421052631576, eval_cer=0.13333333333333333, eval_runtime=1.3482, eval_samples_per_second=7.417, eval_steps_per_second=1.483, epoch=120.0
+2026-04-15 00:21:55,272 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:21:55,559 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:23:29,063 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:27:57,138 - INFO - Step 800: loss=9.081292114257813, grad_norm=11.026144981384277, learning_rate=9.145714285714286e-07, epoch=160.0
+2026-04-15 00:27:58,487 - INFO - Step 800: eval_loss=0.42080169916152954, eval_wer=0.5175438596491229, eval_cer=0.14326241134751774, eval_runtime=1.3468, eval_samples_per_second=7.425, eval_steps_per_second=1.485, epoch=160.0
+2026-04-15 00:28:04,175 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:28:04,466 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:28:04,742 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/xet-write-token/main "HTTP/1.1 200 OK"
+2026-04-15 00:29:34,507 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:34:06,243 - INFO - Step 1000: loss=7.099959106445312, grad_norm=10.754712104797363, learning_rate=8.574285714285714e-07, epoch=200.0
+2026-04-15 00:34:07,607 - INFO - Step 1000: eval_loss=0.44012320041656494, eval_wer=0.47368421052631576, eval_cer=0.12907801418439716, eval_runtime=1.3626, eval_samples_per_second=7.339, eval_steps_per_second=1.468, epoch=200.0
+2026-04-15 00:34:13,204 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:34:13,557 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:35:42,913 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:40:15,065 - INFO - Step 1200: loss=5.74494873046875, grad_norm=10.820343971252441, learning_rate=8.002857142857142e-07, epoch=240.0
+2026-04-15 00:40:16,425 - INFO - Step 1200: eval_loss=0.4515101909637451, eval_wer=0.49122807017543857, eval_cer=0.14609929078014183, eval_runtime=1.3574, eval_samples_per_second=7.367, eval_steps_per_second=1.473, epoch=240.0
+2026-04-15 00:40:22,024 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:40:22,380 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:41:52,697 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:46:23,886 - INFO - Step 1400: loss=4.781593322753906, grad_norm=9.558479309082031, learning_rate=7.43142857142857e-07, epoch=280.0
+2026-04-15 00:46:25,225 - INFO - Step 1400: eval_loss=0.4515921473503113, eval_wer=0.4824561403508772, eval_cer=0.14184397163120568, eval_runtime=1.338, eval_samples_per_second=7.474, eval_steps_per_second=1.495, epoch=280.0
+2026-04-15 00:46:30,922 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:46:31,264 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:46:31,581 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/xet-write-token/main "HTTP/1.1 200 OK"
+2026-04-15 00:48:17,502 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:52:32,803 - INFO - Step 1600: loss=3.9853500366210937, grad_norm=11.09756088256836, learning_rate=6.86e-07, epoch=320.0
+2026-04-15 00:52:34,147 - INFO - Step 1600: eval_loss=0.45538926124572754, eval_wer=0.49122807017543857, eval_cer=0.14468085106382977, eval_runtime=1.3423, eval_samples_per_second=7.45, eval_steps_per_second=1.49, epoch=320.0
+2026-04-15 00:52:39,914 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:52:40,204 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 00:54:17,092 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 00:58:42,285 - INFO - Step 1800: loss=3.3930764770507813, grad_norm=8.1896390914917, learning_rate=6.288571428571429e-07, epoch=360.0
+2026-04-15 00:58:43,656 - INFO - Step 1800: eval_loss=0.46064311265945435, eval_wer=0.49122807017543857, eval_cer=0.14042553191489363, eval_runtime=1.3687, eval_samples_per_second=7.306, eval_steps_per_second=1.461, epoch=360.0
+2026-04-15 00:58:49,142 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 00:58:49,430 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:00:20,128 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:04:51,363 - INFO - Step 2000: loss=2.9241864013671877, grad_norm=8.49050521850586, learning_rate=5.717142857142857e-07, epoch=400.0
+2026-04-15 01:04:52,731 - INFO - Step 2000: eval_loss=0.4651966691017151, eval_wer=0.5, eval_cer=0.1347517730496454, eval_runtime=1.3664, eval_samples_per_second=7.319, eval_steps_per_second=1.464, epoch=400.0
+2026-04-15 01:04:58,393 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:04:58,731 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:04:59,058 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/xet-write-token/main "HTTP/1.1 200 OK"
+2026-04-15 01:06:33,171 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:11:00,394 - INFO - Step 2200: loss=2.570625, grad_norm=7.736327648162842, learning_rate=5.145714285714286e-07, epoch=440.0
+2026-04-15 01:11:01,753 - INFO - Step 2200: eval_loss=0.4651281237602234, eval_wer=0.49122807017543857, eval_cer=0.1375886524822695, eval_runtime=1.3565, eval_samples_per_second=7.372, eval_steps_per_second=1.474, epoch=440.0
+2026-04-15 01:11:07,383 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:11:07,736 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:12:38,251 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:17:09,555 - INFO - Step 2400: loss=2.2906031799316406, grad_norm=8.600720405578613, learning_rate=4.574285714285714e-07, epoch=480.0
+2026-04-15 01:17:10,906 - INFO - Step 2400: eval_loss=0.4653913974761963, eval_wer=0.49122807017543857, eval_cer=0.13049645390070921, eval_runtime=1.3489, eval_samples_per_second=7.413, eval_steps_per_second=1.483, epoch=480.0
+2026-04-15 01:17:16,510 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:17:16,852 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:18:52,425 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:23:19,324 - INFO - Step 2600: loss=2.0673126220703124, grad_norm=14.732973098754883, learning_rate=4.002857142857143e-07, epoch=520.0
+2026-04-15 01:23:20,715 - INFO - Step 2600: eval_loss=0.4690968990325928, eval_wer=0.4824561403508772, eval_cer=0.13617021276595745, eval_runtime=1.3893, eval_samples_per_second=7.198, eval_steps_per_second=1.44, epoch=520.0
+2026-04-15 01:23:26,279 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:23:26,614 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:23:26,939 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/xet-write-token/main "HTTP/1.1 200 OK"
+2026-04-15 01:24:58,440 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:29:28,762 - INFO - Step 2800: loss=1.8781123352050781, grad_norm=6.665144920349121, learning_rate=3.431428571428571e-07, epoch=560.0
+2026-04-15 01:29:30,156 - INFO - Step 2800: eval_loss=0.47110891342163086, eval_wer=0.47368421052631576, eval_cer=0.1375886524822695, eval_runtime=1.3915, eval_samples_per_second=7.186, eval_steps_per_second=1.437, epoch=560.0
+2026-04-15 01:29:35,891 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:29:36,243 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:31:09,183 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:35:38,414 - INFO - Step 3000: loss=1.7201324462890626, grad_norm=5.6594014167785645, learning_rate=2.8599999999999994e-07, epoch=600.0
+2026-04-15 01:35:39,818 - INFO - Step 3000: eval_loss=0.4746812582015991, eval_wer=0.47368421052631576, eval_cer=0.1375886524822695, eval_runtime=1.4016, eval_samples_per_second=7.134, eval_steps_per_second=1.427, epoch=600.0
+2026-04-15 01:35:45,286 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:35:45,568 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:37:15,837 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:41:48,169 - INFO - Step 3200: loss=1.6416644287109374, grad_norm=6.092893123626709, learning_rate=2.2885714285714285e-07, epoch=640.0
+2026-04-15 01:41:49,557 - INFO - Step 3200: eval_loss=0.4783996343612671, eval_wer=0.47368421052631576, eval_cer=0.13617021276595745, eval_runtime=1.3858, eval_samples_per_second=7.216, eval_steps_per_second=1.443, epoch=640.0
+2026-04-15 01:41:55,394 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:41:55,797 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:41:56,182 - INFO - HTTP Request: GET https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/xet-write-token/main "HTTP/1.1 200 OK"
+2026-04-15 01:43:26,613 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"
+2026-04-15 01:47:57,772 - INFO - Step 3400: loss=1.55480224609375, grad_norm=5.901069641113281, learning_rate=1.717142857142857e-07, epoch=680.0
+2026-04-15 01:47:59,141 - INFO - Step 3400: eval_loss=0.4786969721317291, eval_wer=0.47368421052631576, eval_cer=0.13617021276595745, eval_runtime=1.3674, eval_samples_per_second=7.313, eval_steps_per_second=1.463, epoch=680.0
+2026-04-15 01:48:04,574 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/preupload/main "HTTP/1.1 200 OK"
+2026-04-15 01:48:04,900 - INFO - HTTP Request: POST https://huggingface.co/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1.git/info/lfs/objects/batch "HTTP/1.1 200 OK"
+2026-04-15 01:49:35,034 - INFO - HTTP Request: POST https://huggingface.co/api/models/Ganaa0614/whisper-small-fft-custom-mongolian-ver_0.1/commit/main "HTTP/1.1 200 OK"

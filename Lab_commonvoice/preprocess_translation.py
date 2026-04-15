@@ -3,15 +3,28 @@ import re
 import torch
 from datasets import load_dataset, Audio, concatenate_datasets
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, WhisperProcessor
+from dotenv import load_dotenv
+from huggingface_hub import login 
+import argparse
+import gc 
+from transformers import BitsAndBytesConfig  
 
 
 
-base_dir = "Lab_comonvoice/data/cv-corpus-24.0-2025-12-05-mn/cv-corpus-24.0-2025-12-05/mn"
+def args_parse():
+    parser = argparse.ArgumentParser(description="PREPROCESS HYPERPARAMTERS")
+    parser.add_argument(
+        "--data",
+        help="Data choice for preprocess commonvoice or custom (default commonvoice)",
+        choices=["commonvoice", "custom"],
+        default="commonvoice"
+    )
+    
+    return parser.parse_args()
 
 
-def attach_audio_paths(batch):
-    batch["audio"] = os.path.join(base_dir, "clips", batch["path"])
-    return batch
+load_dotenv()
+login(token=os.getenv("HF_TOKEN"))
 
 
 def remove_special_characters(batch):
@@ -26,7 +39,7 @@ def remove_special_characters(batch):
 
 
 def remove_unness_characters(batch):
-    chars_to_remove = r'[habcdegilnortx0123456789_fmpsuvw]'
+    chars_to_remove = r'[a-zA-Z0-9_]'
     batch["sentence"] = re.sub(chars_to_remove, '', batch["sentence"]).lower()
     return batch
 
@@ -37,12 +50,15 @@ def extract_all_chars(batch):
     return {"vocab": [vocab], "all_text": [all_text]}
 
 
-print("Loading model")
 model_name = "facebook/nllb-200-distilled-600M"
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
+
 model = AutoModelForSeq2SeqLM.from_pretrained(
-    model_name, dtype=torch.float16, low_cpu_mem_usage=True)
+    model_name, 
+    torch_dtype=torch.float16, 
+    low_cpu_mem_usage=True
+)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
@@ -73,64 +89,65 @@ def translate_to_english(batch):
         translated_tokens, skip_special_tokens=True)
     return batch
 
-
 if __name__ == "__main__":
+    args = args_parse()
 
-    data_files = {
-        "train": os.path.join(base_dir, "train.tsv"),
-        "validation": os.path.join(base_dir, "dev.tsv"),
-        "test": os.path.join(base_dir, "test.tsv")
-    }
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    dataset = load_dataset("csv", data_files=data_files, delimiter="\t")
+    base_dir ="Lab_commonvoice/data"
+    
+    if args.data == "custom":
+        base_dir = os.path.join(base_dir, "my_voice_dataset_raw")
+        data_file = {
+            "cleaned": os.path.join(base_dir, "real_valid_rows.tsv")
+        }
+    else:
+        base_dir = os.path.join(base_dir, "commonvoice_raw") 
+        data_file = {
+            "cleaned": os.path.join(base_dir, "real_valid_rows.tsv")
+        }
 
-    common_voice_train = concatenate_datasets(
-        [dataset["train"], dataset["validation"]])
-    common_voice_test = dataset["test"]
+    def attach_audio_paths(batch):
+        batch["audio"] = os.path.join(base_dir, "clips", batch["path"])
+        return batch
+    
+    dataset = load_dataset("csv", data_files=data_file, delimiter="\t")
 
-    common_voice_train = common_voice_train.map(attach_audio_paths)
-    common_voice_test = common_voice_test.map(attach_audio_paths)
+    common_voice_dataset = dataset.map(attach_audio_paths)
+    
+    unness_cols = ["Unnamed: 0", "client_id", "sentence_id", "sentence_domain", "up_votes", "down_votes", "age", "gender", "accents", "variant", "locale", "segment"]
+    if args.data != "custom":
+        common_voice_dataset = common_voice_dataset.remove_columns(unness_cols)
 
-    common_voice_train = common_voice_train.cast_column(
+    common_voice_dataset = common_voice_dataset["cleaned"]    
+
+    common_voice_dataset = common_voice_dataset.cast_column(
         "audio", Audio(sampling_rate=16000))
-    common_voice_test = common_voice_test.cast_column(
-        "audio", Audio(sampling_rate=16000))
-
-    unness_cols = ["accents", "age", "client_id", "down_votes", "gender",
-                   "locale", "segment", "up_votes", "sentence_id", "sentence_domain", "variant"]
-
-    common_voice_train = common_voice_train.remove_columns(unness_cols)
-    common_voice_test = common_voice_test.remove_columns(unness_cols)
 
     print("Translating training set...")
-    common_voice_train = common_voice_train.map(
-        translate_to_english, batched=True, batch_size=16)
+    common_voice_dataset = common_voice_dataset.map(
+        translate_to_english, batched=True, batch_size=64)
 
-    print("Translating test set...")
-    common_voice_test = common_voice_test.map(
-        translate_to_english, batched=True, batch_size=16)
 
     print("Cleaning text and extracting vocab...")
-    common_voice_train = common_voice_train.map(remove_special_characters)
-    common_voice_test = common_voice_test.map(remove_special_characters)
+    common_voice_dataset = common_voice_dataset.map(remove_special_characters)
 
-    common_voice_train = common_voice_train.map(remove_unness_characters)
-    common_voice_test = common_voice_test.map(remove_unness_characters)
+    common_voice_dataset = common_voice_dataset.map(remove_unness_characters)
 
-    vocab_train = common_voice_train.map(extract_all_chars, batched=True, batch_size=16,
-                                         keep_in_memory=True, remove_columns=common_voice_train.column_names)
-    vocab_test = common_voice_test.map(extract_all_chars, batched=True, batch_size=16,
-                                       keep_in_memory=True, remove_columns=common_voice_test.column_names)
-
+    vocab_train = common_voice_dataset.map(extract_all_chars, batched=True, batch_size=32,
+                                         keep_in_memory=True, remove_columns=common_voice_dataset.column_names)
 
     processor = WhisperProcessor.from_pretrained(
     "openai/whisper-tiny", language="Mongolian", task="transcribe")
 
-    common_voice_train = common_voice_train.filter(lambda sample: len(processor.tokenizer(sample["sentence"]).input_ids) <= 448)
-    common_voice_test = common_voice_test.filter(lambda sample: len(processor.tokenizer(sample["sentence"]).input_ids) <= 448)
+    common_voice_dataset = common_voice_dataset.filter(lambda sample: len(processor.tokenizer(sample["sentence"]).input_ids) <= 448)
+    
+    splitted = common_voice_dataset.train_test_split(test_size=0.2, seed=42)
+    test_val = splitted["test"].train_test_split(test_size=0.5, seed=42)
+    test_val["validation"] = test_val.pop("train")
+    test_val["train"] = splitted["train"]
 
-    common_voice_train.save_to_disk(
-        "Lab_commonvoice/data/common_voice_train")
-    common_voice_test.save_to_disk(
-        "Lab_commonvoice/data/common_voice_test")
-    print("Multi-task dataset successfully saved!")
+    test_val.push_to_hub(f"Ganaa0614/mongolian-{args.data}-stt-translated-full")
+
+    common_voice_dataset.save_to_disk(f"Lab_commonvoice/data/{args.data}_voice_dataset_full")
+  

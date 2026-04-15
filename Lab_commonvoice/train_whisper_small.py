@@ -58,7 +58,7 @@ def compute_metrics(pred):
     wer = wer_metric.compute(predictions=pred_str, references=label_str)
     cer = cer_metric.compute(predictions=pred_str, references=label_str)
 
-    return {"wer": wer, "cer": cer}
+    return {"wer": wer, "cer": cer}"""  """
 
 
 if __name__ == "__main__":

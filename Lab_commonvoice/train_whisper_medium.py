@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 from CustomCallback import CustomLogCallback
 import logging
 
+
 def setup_logging(current_dir, train_session_name):
     log_dir = os.path.join(current_dir, "logs")
     os.makedirs(log_dir, exist_ok=True)
@@ -32,6 +33,7 @@ def setup_logging(current_dir, train_session_name):
         level=logging.INFO
     )
     return log_file    
+
 
 def args_parse():
     parser = argparse.ArgumentParser(description="training parameters")
@@ -72,7 +74,8 @@ def args_parse():
         "--eval_batch",
         help="eval batch size (4, 8, .etc)",
         default=4,
-        type=int
+        type=int,
+        required=True
     )
     parser.add_argument(
         "--save_version",
@@ -85,6 +88,11 @@ def args_parse():
         required=True,
         choices=["commonvoice", "custom"],
         default="commonvoice"
+    )
+    parser.add_argument(
+        "--load_version",
+        help="Version of the commonvoice model to load (used only for custom training)",
+        default=None
     )
     return parser.parse_args()
 
@@ -129,15 +137,17 @@ def compute_metrics(pred):
 
 
 if __name__ == "__main__":    
-    torch.backends.cuda.matmul.allow_tf32 = True
-    torch.backends.cudnn.allow_tf32 = True
+    # torch.backends.cuda.matmul.allow_tf32 = True
+    # torch.backends.cudnn.allow_tf32 = True
+
     args = args_parse()
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    save_dir = os.path.join(current_dir, "models",f"whisper_{args.model_size}_{args.peft}_{args.train_data}_mongolian")
+    save_dir = os.path.join(current_dir, "models",f"whisper_{args.model_size}_{args.peft}_{args.train_data}_mongolian_{args.save_version}")
 
     hub_model_id = f"Ganaa0614/whisper-{args.model_size}-{args.peft}-{args.train_data}-mongolian-ver_{args.save_version}"
-    
+    log_file = setup_logging(current_dir, f"whisper_{args.model_size}_{args.peft}_{args.train_data}_mongolian_{args.save_version}")
+
     commonvoice_dir = os.path.join(current_dir, "data", "mapped_dataset", "commonvoice")
     custom_dir = os.path.join(current_dir, "data", "mapped_dataset", "custom")
 
@@ -151,9 +161,11 @@ if __name__ == "__main__":
         bnb_4bit_compute_dtype=torch.float16,
         bnb_4bit_use_double_quant=True,
     )
+    
     base_model_id = f"openai/whisper-{args.model_size}"
 
-    prev_hub_id = f"Ganaa0614/whisper-{args.model_size}-{args.peft}-commonvoice-mongolian-ver_{args.save_version}"
+    load_ver = args.load_version if args.load_version else args.save_version
+    prev_hub_id = f"Ganaa0614/whisper-{args.model_size}-{args.peft}-commonvoice-mongolian-ver_{load_ver}"
     
     processor = WhisperProcessor.from_pretrained(
         base_model_id, language="Mongolian", task="transcribe")
@@ -162,7 +174,8 @@ if __name__ == "__main__":
         model = WhisperForConditionalGeneration.from_pretrained(
             base_model_id,
             quantization_config=bnb_config if args.peft.lower() == "qlora" else None,
-            torch_dtype=torch.float16 if args.peft.lower() != "qlora" else None,
+            # torch_dtype=torch.float16 if args.peft.lower() != "qlora" else None,
+            torch_dtype=None,
             device_map={"": 0}
         )
     else:
@@ -170,14 +183,16 @@ if __name__ == "__main__":
         if args.peft.lower() == "fft":
             model = WhisperForConditionalGeneration.from_pretrained(
                 prev_hub_id,
-                torch_dtype=torch.float16,
+                # torch_dtype=torch.float16,
+                torch_dtype=None,
                 device_map={"": 0}
             )
         else:
             model = WhisperForConditionalGeneration.from_pretrained(
                 base_model_id,
                 quantization_config=bnb_config if args.peft.lower() == "qlora" else None,
-                torch_dtype=torch.float16 if args.peft.lower() != "qlora" else None,
+                # torch_dtype=torch.float16 if args.peft.lower() != "qlora" else None,
+                torch_dtype=None,
                 device_map={"": 0}
             )
 
@@ -196,18 +211,22 @@ if __name__ == "__main__":
         test_transcribe = load_from_disk(f"{train_data_dir}/test_transcribe")
         train_translation = load_from_disk(f"{train_data_dir}/train_translation")
 
+        logging.info("Dataset loaded from local")
+
     else:
-        fulldataset = load_dataset(f"Ganaa0614/mongolian-{args.train_data}-stt-translated")
+        fulldataset = load_dataset(f"Ganaa0614/mongolian-{args.train_data}-stt-translated-full")
 
         train_set = fulldataset["train"]
         test_set = fulldataset["validation"]
+        print("Dataset loaded from Hub.")
 
         train_set = train_set.cast_column("audio", Audio(sampling_rate=16_000))
         test_set = test_set.cast_column("audio", Audio(sampling_rate=16_000))
 
-        train_transcribe = train_set.map(prepare_transcribe, remove_columns=train_set.column_names, num_proc=4, load_from_cache_file=False)
-        test_transcribe = test_set.map(prepare_transcribe, remove_columns=test_set.column_names,num_proc=4, load_from_cache_file=False)
-        train_translation = train_set.map(prepare_translation, remove_columns=train_set.column_names, num_proc=4, load_from_cache_file=False)
+        print("Maping started.")
+        train_transcribe = train_set.map(prepare_transcribe, remove_columns=train_set.column_names, load_from_cache_file=False)
+        test_transcribe = test_set.map(prepare_transcribe, remove_columns=test_set.column_names, load_from_cache_file=False)
+        train_translation = train_set.map(prepare_translation, remove_columns=train_set.column_names, load_from_cache_file=False)
         
         train_transcribe.save_to_disk(f"{train_data_dir}/train_transcribe")
         test_transcribe.save_to_disk(f"{train_data_dir}/test_transcribe")
@@ -216,10 +235,10 @@ if __name__ == "__main__":
         del train_set
         del test_set
         gc.collect()
+        logging.info("Dataset loaded from Hub")
 
 
-    mixed_train = concatenate_datasets(
-        [train_transcribe, train_translation]).shuffle(seed=42)
+    mixed_train = concatenate_datasets([train_transcribe, train_translation]).shuffle(seed=42)
     mixed_train.set_format(type="torch", columns=["input_features", "labels"])
     test_transcribe.set_format(type="torch", columns=["input_features", "labels"])
     
@@ -259,8 +278,8 @@ if __name__ == "__main__":
         bf16=True,
         eval_strategy="steps",
         save_strategy="steps",
-        save_steps=1000,
-        eval_steps=1000,  # change this to 200 when entering full training
+        save_steps=200,
+        eval_steps=200,  # change this to 200 when entering full training
         logging_steps=200,
         predict_with_generate=True,
         generation_max_length=225,
@@ -281,7 +300,6 @@ if __name__ == "__main__":
     if os.path.exists(save_dir) and os.listdir(save_dir):
         last_checkpoint = get_last_checkpoint(save_dir)
 
-
     trainer = Seq2SeqTrainer(
         args=training_args,
         model=model,
@@ -292,6 +310,8 @@ if __name__ == "__main__":
         processing_class=processor,
         callbacks=[CustomLogCallback]
     )
+
+    logging.info(f"Trainnig started with\n" + ", ".join(f"{k}: {v}" for k, v in vars(args).items()) + "\n")
 
     trainer.train(resume_from_checkpoint=last_checkpoint)
     trainer.save_model(save_dir)
@@ -309,6 +329,7 @@ if __name__ == "__main__":
         print(f"Error details: {e}")
 
     print(f"Model and proccesssor saved to {save_dir}")
+    logging.info(f"Training finished\nModel saved: {save_dir}\nModel configs saved: {yaml_path}\n\n\n")
 
     del model
     del trainer
@@ -317,7 +338,4 @@ if __name__ == "__main__":
     gc.collect()
     torch.cuda.empty_cache()
 
-
-    trainer.train(resume_from_checkpoint=last_checkpoint)
-    trainer.save_model(save_dir)
 

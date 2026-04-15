@@ -12,6 +12,13 @@ parser.add_argument(
     choices=["whisper", "xlsr"],
     help="Choose model: 'whisper' or 'xlsr' (default: xlsr)"
 )
+parser.add_argument(
+    "--task",
+    default="transcribe",
+    help="choose task",
+    choices=["translate", "transcribe"]
+)
+
 args = parser.parse_args()
 
 
@@ -21,7 +28,7 @@ if args.model_type.lower() == "whisper":
     # model = AutoModelForSpeechSeq2Seq.from_pretrained(
     #     "Ganaa0614/whisper-small-mongolian-ver_0.1")
  
-    local_path = "models/whisper_small_mongolian"
+    local_path = "models/whisper_small_fft_commonvoice_mongolian_0.2"
 
     processor = AutoProcessor.from_pretrained(
         local_path,
@@ -67,7 +74,7 @@ def transcribe(audio_path):
 
         with torch.no_grad():
             forced_decoder_ids = processor.get_decoder_prompt_ids(
-                language="Mongolian", task="transcribe")
+                language="Mongolian", task=args.task.lower())
 
             predicted_ids = model.generate(
                 input_features,
@@ -89,7 +96,7 @@ iface = gr.Interface(
         format="wav",
         label=f"Mongolian speech input ({args.model_type.upper()})"
     ),
-    outputs=gr.Textbox(label="Model Transcription", interactive=True),
+    outputs=gr.Textbox(label=f"Model {args.task}", interactive=True),
     title="Mongolian Speech-to-Text Setup",
     description=f"Currently running the **{args.model_type.upper()}** model. Click 'RECORD' to speak.",
 
