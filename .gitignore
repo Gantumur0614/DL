@@ -3,9 +3,10 @@ data/
 *.txt 
 __pycache__ 
 models/ 
-keyforce_https/
+keysforce_https/
 .env
 *.ipynb
 *.json
 push_model.py
 unlsoth_compiled_cache/
+keysforce_https
