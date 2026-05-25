@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffusion SLM Interface</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f1115;
+            color: #e5e7eb;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+        .user-message {
+            background-color: #3b82f6;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background-color: #1f2937;
+            align-self: flex-start;
+            font-family: 'Courier New', Courier, monospace; 
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .diffusing {
+            color: #4ade80; 
+            text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+        }
+        .complete {
+            color: #e5e7eb;
+            transition: color 0.3s ease;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #374151;
+            background-color: #1f2937;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: none;
+            background-color: #ffffff;
+            color: #0f1115;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e5e7eb;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="header">
+        <h2>Diffusion SLM</h2>
+        <div class="toggle-container">
+            <label for="diffusionToggle">Diffusion Effect</label>
+            <input type="checkbox" id="diffusionToggle" checked>
+        </div>
+    </div>
+
+    <div class="messages" id="messagesBox">
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="promptInput" placeholder="Type a message..." autocomplete="off">
+        <button id="sendBtn">Send</button>
+    </div>
+</div>
+
+<script>
+    const messagesBox = document.getElementById('messagesBox');
+    const promptInput = document.getElementById('promptInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const diffusionToggle = document.getElementById('diffusionToggle');
+
+    const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/chat`);
+    let currentBotMessageDiv = null;
+
+    ws.onopen = () => console.log("WebSocket connected!");
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+        if (!currentBotMessageDiv) {
+            currentBotMessageDiv = document.createElement('div');
+            currentBotMessageDiv.className = 'message bot-message';
+            messagesBox.appendChild(currentBotMessageDiv);
+        }
+
+        if (data.status === 'diffusing') {
+            currentBotMessageDiv.classList.add('diffusing');
+            currentBotMessageDiv.classList.remove('complete');
+        } else if (data.status === 'complete') {
+            currentBotMessageDiv.classList.remove('diffusing');
+            currentBotMessageDiv.classList.add('complete');
+        }
+
+        currentBotMessageDiv.innerText = data.text;
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+
+        if (data.status === 'complete') {
+            currentBotMessageDiv = null; 
+        }
+    };
+
+    function sendMessage() {
+        const text = promptInput.value.trim();
+        if (!text) return;
+
+        const userDiv = document.createElement('div');
+        userDiv.className = 'message user-message';
+        userDiv.innerText = text;
+        messagesBox.appendChild(userDiv);
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+
+        ws.send(JSON.stringify({
+            prompt: text,
+            use_diffusion: diffusionToggle.checked
+        }));
+
+        promptInput.value = '';
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    promptInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>
+
+</body>
+</html>

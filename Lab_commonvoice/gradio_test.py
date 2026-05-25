@@ -1,9 +1,15 @@
+import os 
 import gradio as gr
 import torch
 import librosa
 import argparse
 from transformers import AutoProcessor, AutoModelForSpeechSeq2Seq, Wav2Vec2ForCTC, Wav2Vec2Processor
 from flag_data_class import CommonVoiceFlagger
+from dotenv import load_dotenv
+from huggingface_hub import login
+
+load_dotenv()
+login(token=os.getenv("HF_TOKEN"))
 
 parser = argparse.ArgumentParser(description="Launch Mongolian STT App")
 parser.add_argument(
@@ -23,22 +29,12 @@ args = parser.parse_args()
 
 
 if args.model_type.lower() == "whisper":
-    # processor = AutoProcessor.from_pretrained(
-    #     "Ganaa0614/whisper-small-mongolian-ver_0.1")
-    # model = AutoModelForSpeechSeq2Seq.from_pretrained(
-    #     "Ganaa0614/whisper-small-mongolian-ver_0.1")
- 
-    local_path = "models/whisper_small_fft_commonvoice_mongolian_0.2"
-
     processor = AutoProcessor.from_pretrained(
-        local_path,
-        local_files_only=True
-    )
+        "Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2")
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
-        local_path,
-        local_files_only=True
-    )
+        "Ganaa0614/whisper-small-fft-commonvoice-mongolian-ver_0.2")
     
+     
 elif args.model_type == "xlsr":
     processor = Wav2Vec2Processor.from_pretrained(
         "Ganaa0614/wav2vec2-large-xlsr-53-mongolian_ver_0.1")
